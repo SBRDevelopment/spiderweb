@@ -1,19 +1,19 @@
 module.exports = {
 	log: {
-		level: process.env.log_level || 'DEBUG',
-		config: process.env.log_config || 'log4js.config.json'
+		level: process.env.LOG_LEVEL || 'DEBUG',
+		config: process.env.LOG_CONFIG || 'log4js.config.json'
 	},
 	binding: {
-		port: process.env.binding_port || 8081
+		port: process.env.BINDING_PORT || 8081
 	},
 	api: {
-		host: 'http://localhost:' + (process.env.binding_port || 8081)
+		host: 'http://localhost:' + (process.env.BINDING_PORT || 8081)
 	},
   	marathon: {
-    	host: process.env.marathon_host || 'localhost',
-    	port: process.env.marathon_port || 8080
+    	host: process.env.MARATHON_HOST || 'localhost',
+    	port: process.env.MARATHON_PORT || 8080
 	},
  	zookeeper: {
-  		connect: process.env.zookeeper_connect || 'localhost:2181'
+  		connect: process.env.ZOOKEEPER_CONNECT || 'localhost:2181'
   	}
 }
