@@ -1,0 +1,125 @@
+/** @jsx React.DOM */
+
+var React = require('react');
+var Settings = require('../models/Settings')
+
+AppSetting = React.createClass({
+	getInitialState: function() {
+		return {
+			settings: new Settings()
+		}
+	},	
+	componentDidMount: function() {
+		this.state.settings.url += '/' + encodeURIComponent(this.props.task.id.replace(/^\//g, ''))
+		this.state.settings.on('sync', this.forceUpdate.bind(this, null))
+		this.state.settings.on('sync', this.props.onUpdateTemplate)
+		this.state.settings.fetch()
+	},
+  	onAddSetting: function(id, e) {
+  		e.preventDefault()
+  		switch(id) {
+  			case AppSetting.options.frontend:
+  				this.addSetting(id, this.refs.frontendOptions.getDOMNode().value)
+  				break;
+  			case AppSetting.options.backend:
+  				this.addSetting(id, this.refs.backendOptions.getDOMNode().value)
+  				break;
+  		}
+  	},
+  	addSetting: function(id, name) {
+  		setting = this.state.settings.get(id)
+  		if(!setting) {
+  			setting = new this.state.settings.model({id: id, data: []})
+  			setting = this.state.settings.add(setting)
+  		}
+		data = setting.get('data')
+		data.push(name)
+		setting.save({data: data})
+  	},
+  	onRemoveSetting: function(idx, id, e) {
+  		e.preventDefault()
+  		setting = this.state.settings.get(id)
+  		if(setting) {
+  			data = setting.get('data')
+  			if(data) {
+  				data.splice(idx, 1)
+  				setting.save({data: data})
+  			}
+  		}
+  	},
+  	getSetting: function(id) {
+  		setting = this.state.settings.get(id)
+  		if(!setting) {
+  			return []
+  		}
+  		return setting.get('data')
+  	},
+	render: function() {
+		return (
+			<div className="panel panel-default">
+			  <div className="panel-heading">
+			    <h3 className="panel-title">{this.props.task.id}</h3>
+			  </div>
+			  <div className="panel-body">
+				<form className="form-horizontal">
+				  <div className="form-group form-group-sm">
+				    <label for="frontendOptions" className="col-xs-3 control-label">Frontend Option</label>
+				    <div className="input-group col-xs-8 col-sm-8 col-md-8 input-group-sm">
+						<input type="text" className="form-control" ref="frontendOptions" placeholder="enter option" />
+						<span className="input-group-btn">
+							<button className="btn btn-default" type="button" onClick={this.onAddSetting.bind(this, AppSetting.options.frontend)}>
+								Add <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							</button>
+						</span>
+				    </div>
+				  </div>
+				  <div className="form-group form-group-sm">
+					<ul className="list-group list-options col-xs-offset-3 col-xs-8 col-sm-8 col-md-8">
+						{
+							this.getSetting(AppSetting.options.frontend).map(function(option, i) {
+								return (
+									<li key={i} className="list-group-item">
+										{option} <span className="glyphicon glyphicon-trash pull-right" onClick={this.onRemoveSetting.bind(this, i, AppSetting.options.frontend)} aria-hidden="true"></span>
+									</li>
+								)
+							}.bind(this))
+						}
+					</ul>
+				  </div>
+				  <div className="form-group form-group-sm">
+				    <label for="backendOptions" className="col-xs-3 control-label">Backend Option</label>
+				    <div className="input-group col-xs-8 col-sm-8 col-md-8 input-group-sm">
+						<input type="text" className="form-control" ref="backendOptions" placeholder="enter option" />
+						<span className="input-group-btn">
+							<button className="btn btn-default" type="button" onClick={this.onAddSetting.bind(this, AppSetting.options.backend)}>
+								Add <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							</button>
+						</span>
+				    </div>
+				  </div>
+				  <div className="form-group form-group-sm">
+				  	<ul className="list-group list-options col-xs-offset-3 col-xs-8 col-sm-8 col-md-8">
+						{
+							this.getSetting(AppSetting.options.backend).map(function(option, i) {
+								return (
+									<li key={i} className="list-group-item">
+										{option} <span className="glyphicon glyphicon-trash pull-right" onClick={this.onRemoveSetting.bind(this, i, AppSetting.options.backend)} aria-hidden="true"></span>
+									</li>
+								)
+							}.bind(this))
+						}
+					</ul>
+				  </div>
+				</form>
+			  </div>
+			</div>
+		);
+	}
+});
+
+AppSetting.options = {
+	frontend: 'frontend',
+	backend: 'backend'
+}
+
+module.exports = AppSetting

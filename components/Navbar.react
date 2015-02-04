@@ -1,0 +1,58 @@
+/** @jsx React.DOM */
+
+var React = require('react');
+
+Navbar = React.createClass({
+	getInitialState: function(props) {
+		props = props || this.props;
+		return {
+		}
+	},
+	componentWillReceiveProps: function(newProps, oldProps){
+    	this.setState(this.getInitialState(newProps));
+  	},
+  	onClick: function(page, e) {
+  		e.preventDefault();
+  		if(page != this.props.page) {
+  			this.props.onPageChange(page);	
+  		}
+  	},
+	render: function() {
+		return (
+			<nav className="navbar navbar-inverse">
+			  <div className="container-fluid">
+			    <div className="navbar-header">
+			      <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu">
+			        <span className="icon-bar"></span>
+			        <span className="icon-bar"></span>
+			        <span className="icon-bar"></span>
+			      </button>
+			      <a className="navbar-brand" href="#">SpiderWeb</a>
+			    </div>
+			    <div className="collapse navbar-collapse" id="menu">
+			      <ul className="nav navbar-nav">
+        		  	<li className={this.props.page == Navbar.view.edit ? "active" : ""}>
+        		  		<a href="#" onClick={this.onClick.bind(this, Navbar.view.edit)}>Edit</a>
+        		  	</li>
+        		  	<li className={this.props.page == Navbar.view.preview ? "active" : ""}>
+        		  		<a href="#" onClick={this.onClick.bind(this, Navbar.view.preview)}>Preview</a>
+        		  	</li>
+        		  </ul>
+			      <ul className="nav navbar-nav navbar-right">
+			        <li>
+			        	<a href="#">Help</a>
+			        </li>
+			      </ul>
+			    </div>
+			  </div>
+			</nav>
+		)
+	}
+});
+
+Navbar.view = {
+	edit: 1,
+	preview: 2
+}
+
+module.exports = Navbar

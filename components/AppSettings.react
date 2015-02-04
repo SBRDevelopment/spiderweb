@@ -1,0 +1,24 @@
+/** @jsx React.DOM */
+
+var React = require('react');
+var AppSetting = require('./AppSetting.react')
+
+module.exports = AppSettings = React.createClass({
+	getInitialState: function() {
+		return {}
+	},
+	render: function() {
+		_this = this
+		return (
+			<div className="applications">
+				<h1>Application <small>Settings</small></h1>
+				{
+					this.props.tasks.map(function(obj, i) {
+						return <AppSetting key={i} task={obj} onUpdateTemplate={_this.props.onUpdateTemplate} />
+					})
+				}
+			</div>
+		);
+	}
+});
+

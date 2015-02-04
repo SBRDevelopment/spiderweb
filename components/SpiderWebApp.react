@@ -1,0 +1,67 @@
+/** @jsx React.DOM */
+
+var React = require('react');
+var Tasks = require('../models/marathon/Tasks')
+var Template = require('../models/Template')
+
+var Navbar = require('./Navbar.react')
+var AppSettings = require('./AppSettings.react')
+var TemplateViewer = require('./TemplateViewer.react')
+
+SpiderWebApp = React.createClass({
+	getInitialState: function(props) {
+		props = props || this.props;
+		return {
+			tasks: new Tasks(props.tasks),
+			page: Navbar.view.edit,
+			template: new Template(JSON.parse(this.props.template)),
+			value: '',
+			showPreview: false
+		}
+	},
+	componentWillReceiveProps: function(newProps, oldProps){
+		if(newProps != oldProps) {
+	    	this.setState(this.getInitialState(newProps));
+    	}
+  	},
+  	componentDidMount: function() {
+		this.updateTemplate()
+  	},
+  	onPageChange: function(newPage) {
+  		this.setState({
+  			page: newPage, 
+  			showPreview: newPage == Navbar.view.preview
+  		}, this.updateTemplate)
+  		
+  	},
+  	updateTemplate: function() {
+  		console.log("UpdateTemplate")
+		_this = this
+		if(this.state.showPreview) {
+			this.state.template.render(function(response) {
+				_this.setState({value: response.data})
+			}, {})
+		} else {
+			this.setState({value: this.state.template.get('data')})
+		}
+  	},
+	render: function() {
+		return (
+			<div className="spiderweb-app">
+				<Navbar page={this.state.page} onPageChange={this.onPageChange}  />
+				<div className="container-fluid">
+					<div className="row">
+						<div className="col-lg-4 col-md-6 col-sm-12">
+							<AppSettings tasks={this.state.tasks} onUpdateTemplate={this.updateTemplate} />
+						</div>
+						<div className="col-lg-8 col-md-6 col-sm-12">
+							<TemplateViewer template={this.state.template} value={this.state.value} showPreview={this.state.showPreview} />
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
+});
+
+module.exports = SpiderWebApp

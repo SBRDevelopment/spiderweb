@@ -1,0 +1,103 @@
+/** @jsx React.DOM */
+
+var React = require('react');
+var CodeMirrorEditor = require('react-code-mirror')
+var Template = require('../models/Template')
+
+TemplateViewer = React.createClass({
+	getInitialState: function(props) {
+		props = props || this.props;
+		return {
+			editMode: TemplateViewer.mode.saved,
+			timeout: undefined,
+			message: '',
+			value: props.value		
+		}
+	},
+	componentWillReceiveProps: function(newProps, oldProps){
+		if(newProps != oldProps) {
+    		this.setState(this.getInitialState(newProps));
+    	}
+  	},
+  	onChange: function(e) {
+  		if(!this.props.showPreview) {
+	  		if(this.state.editMode == TemplateViewer.mode.writing) {
+	  			clearTimeout(this.state.timeout)
+	  		}
+	  		this.setState({
+	  			editMode: TemplateViewer.mode.writing,
+	  			value: e.target.value,
+	  			timeout: setTimeout(this.onUpdate, 2000)
+	  		})
+  		}
+  	},
+  	onUpdate: function() {
+  		if(!this.props.showPreview) {
+	  		_this = this
+	  		timeout = setTimeout(this.onError, 2000)
+	  		this.props.template.save({data: this.state.value},{
+	  			timeout: 2000,
+	  			failure: function(model, response) {
+	  				_this.onError(response)
+	  			},
+	  			success: function(model, response) {
+	  				clearTimeout(timeout)
+	  				_this.setState({editMode: TemplateViewer.mode.saved})
+	  			}
+	  		})
+	  	}
+  	},
+  	onError: function(error) {
+		this.setState({editMode: TemplateViewer.mode.error, message: error || "Unknown Error"})
+  	},
+  	getEditModeLabel: function() {
+  		if(!this.props.showPreview) {
+	  		switch(this.state.editMode) {
+	  			case TemplateViewer.mode.saved:
+	  				return "label label-success";
+	  				break;
+	  			case TemplateViewer.mode.writing:
+	  				return "label label-info";
+	  				break;
+	  			case TemplateViewer.mode.error:
+	  				return "label label-danger";
+	  				break;
+	  		}
+	  	} else {
+	  		return "label label-warning";
+	  	}
+  	},
+  	getEditModeText: function() {
+  		if(!this.props.showPreview) {
+	  		switch(this.state.editMode) {
+	  			case TemplateViewer.mode.saved:
+	  				return "Saved";
+	  				break;
+	  			case TemplateViewer.mode.writing:
+	  				return "Writing...";
+	  				break;
+	  			case TemplateViewer.mode.error:
+	  				return "Failed";
+	  				break;
+	  		}
+	  	} else {
+	  		return "Read Only";
+	  	}
+  	},
+	render: function() {
+		return (
+			<div className="template">
+				<h1>Haproxy Template <small><span className={this.getEditModeLabel()}>{this.getEditModeText()}</span></small></h1>
+				<CodeMirrorEditor theme="mbo" mode="yaml" lineNumbers={true} readOnly={this.props.showPreview} onChange={this.onChange} value={this.state.value} />
+			</div>
+		)
+	}
+});
+
+TemplateViewer.mode = {
+	saved: 1,
+	writing: 2,
+	error: 3
+}
+
+module.exports = TemplateViewer

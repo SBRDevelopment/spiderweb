@@ -1,0 +1,42 @@
+{
+  "name": "spiderweb",
+  "version": "0.0.0",
+  "description": "SpiderWeb Service Discovery for Mesos",
+  "main": "app.js",
+  "scripts": {
+    "watch": "watchify app.js -o public/js/bundle.js -v",
+    "browserify": "browserify app.js > public/js/bundle.js",
+    "build": "npm run browserify ",
+    "start": "npm run watch & nodemon server.js"
+  },
+  "author": "Brian Wight",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~4.9.7",
+    "node-jsx": "~0.11.0",
+    "react": "~0.12.2",
+    "underscore": "~1.7.0",
+    "backbone": "~1.1.2",
+    "node-rest-client": "~1.4.4",
+    "react-code-mirror": "~3.0.3",
+    "express-namespace": "~0.1.1",
+    "body-parser": "~1.10.2",
+    "ejs": "~2.2.3",
+    "jquery": "~2.1.3",
+    "log4js": "~0.6.22",
+    "zookeeper": "~3.4.6-4",
+    "async": "~0.9.0"
+  },
+  "devDependencies": {
+    "browserify": "~6.0.3",
+    "nodemon": "^1.2.1",
+    "reactify": "~0.14.0",
+    "uglify-js": "~2.4.15",
+    "watchify": "~2.0.0"
+  },
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  }
+}
