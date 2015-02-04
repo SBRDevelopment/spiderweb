@@ -4,7 +4,7 @@ Service Discovery for Marathon. This project is based on the haproxy-marathon-br
 # SpiderWeb Installation
 Assuming that you already have marathon install all you need to do is add a new application using the configuration file shown below and then install the haproxy script.
 
-All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` environmental variables to the correct host name and configuration for your installation of marathon and then add the application.
+All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` environmental variables to the correct host name and configuration for your installation of marathon and then add the application. If there any any conflicts you may also need to replace the `hostPort` configured in the portMappings. You can leave the `hostPort` set to 0 if you choose to do so but then you will need to find the correct port that spiderweb is running on in order to install the script.
 
 ```json
 {
@@ -16,8 +16,8 @@ All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` enviro
 		"BINDING_PORT": "8081"
 	},
 	"instances": 1,
-	"cpus": 0.1,
-	"mem": 64,
+	"cpus": 0.2,
+	"mem": 128,
 	"uris": [],
 	"container": {
 		"type": "DOCKER",
@@ -26,10 +26,25 @@ All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` enviro
 			"network": "BRIDGE",
 			"portMappings": [{
 				"containerPort": 8081,
-				"hostPort": 0,
+				"hostPort": 32000,
 				"servicePort": 8081
 			}]
 		}
-	}
+	},
+	"constraints": [["hostname", "UNIQUE"]]
 }
 ```
+
+Once you add the application then install the cronjob to update haproxy. Assuming that `32000` is the port that was selected for the `hostPort` in the previous step.
+
+```bash
+curl -s http://localhost:32000/install-crontab.sh | bash /dev/stdin install_cronjob http://localhost:32000
+```
+
+Now you can either restart haproxy or wait 1 minute and it will restart with the new configuration.
+
+```bash
+service haproxy restart
+```
+
+To test that spiderweb is properly installed please visit the following URL `http://localhost:8081`.
