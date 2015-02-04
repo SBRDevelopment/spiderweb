@@ -4,14 +4,16 @@ Service Discovery for Marathon. This project is based on the haproxy-marathon-br
 # SpiderWeb Installation
 Assuming that you already have marathon install all you need to do is add a new application using the configuration file shown below and then install the haproxy script.
 
+All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` environmental variables to the correct host name and configuration for your installation of marathon and then add the application.
+
 ```json
 {
 	"id": "/spiderweb",
 	"env": {
-		"MARATHON_HOST": "192.168.2.96",
-		"MARATHON_PORT": 8080,
-		"ZOOKEEPER_CONNECT": "192.168.2.96:2181",
-		"BINDING_PORT": 8081
+		"MARATHON_HOST": "127.0.0.1",
+		"MARATHON_PORT": "8080",
+		"ZOOKEEPER_CONNECT": "127.0.0.1:2181",
+		"BINDING_PORT": "8081"
 	},
 	"instances": 1,
 	"cpus": 0.1,
