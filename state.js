@@ -4,10 +4,10 @@ var config = include('config')
 var log4js = require('log4js')
 
 log4js.configure('log4js.config.json', {})
-log = log4js.getLogger('app')
+var log = log4js.getLogger('app')
 log.setLevel(config.log.level)
 
-zk = new zookeeper({
+var zk = new zookeeper({
 	connect: config.zookeeper.connect,
 	timeout: 200000,
 	debug_level: zookeeper.ZOO_LOG_LEVEL_WARN,

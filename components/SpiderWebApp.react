@@ -35,8 +35,7 @@ SpiderWebApp = React.createClass({
   		
   	},
   	updateTemplate: function() {
-  		console.log("UpdateTemplate")
-		_this = this
+  		var _this = this
 		if(this.state.showPreview) {
 			this.state.template.render(function(response) {
 				_this.setState({value: response.data})

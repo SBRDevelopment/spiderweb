@@ -31,14 +31,14 @@ module.exports = function(app, state) {
 	}
 
 	var getAllSettings = function(failure, success) {
-		_this = this
+		var _this = this
 		state.zk.connect(function(err) {
 			if(err) {
 				failure(error)
 			}
 			state.zk._get_children_paths(zookeeper.getAppsPath(), failure,
 				function(apps) {
-					settings = {}
+					var settings = {}
 					async.each(apps, 
 						function(app, callback) {
 							getSettings(app, callback, function(data) {

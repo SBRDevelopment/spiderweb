@@ -1,6 +1,7 @@
 var Config = require('../config')
 var RestClient = require('node-rest-client').Client
 var Backbone = require('backbone')
+
 Backbone.$ = require('jquery')
 
 var SettingsUri = 'api/v1.0/setting'

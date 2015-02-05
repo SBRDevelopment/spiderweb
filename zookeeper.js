@@ -55,7 +55,7 @@ module.exports.init = function(app, state) {
 	}
 
 	state.zk._set = function(node, content, failure, success) {
-		_this = this
+		var _this = this
 		this.a_get(node, 
 			function(type, stat, path) {
 				state.log.info("_get watch event %s", type)
@@ -99,7 +99,7 @@ module.exports.init = function(app, state) {
 	}
 
 	state.zk._get_children_paths = function(node, failure, success) {
-		_this = this
+		var _this = this
 		this.a_get_children(node, 
 			function(type, stat, path) {
 				state.log.info("_get_children_paths watch event %s", type)
@@ -121,13 +121,13 @@ module.exports.init = function(app, state) {
 	}
 
 	state.zk._get_children = function(node, failure, success, eachitem) {
-		_this = this
+		var _this = this
 		this._get_children_paths(node, failure,
 			function (children) {
-				items = []
+				var items = []
 				async.each(children, 
 					function(child, callback) {
-						childPath = node + '/' + child
+						var childPath = node + '/' + child
 						_this._get(childPath, callback, function(data, stat) {
 							items.push(eachitem(child, data, stat))
 							callback()
@@ -146,7 +146,7 @@ module.exports.init = function(app, state) {
 	}
 
 	// Initialize zookeeper state for templates
-	node = getTemplatePath('default')
+	var node = getTemplatePath('default')
 	state.zk.connect(function(err) {
 		if(err) {
 			state.log.error("ZK Error: %s", err)

@@ -44,20 +44,20 @@ AppSetting = React.createClass({displayName: 'AppSetting',
   		}
   	},
   	addSetting: function(id, name) {
-  		setting = this.state.settings.get(id)
+  		var setting = this.state.settings.get(id)
   		if(!setting) {
   			setting = new this.state.settings.model({id: id, data: []})
   			setting = this.state.settings.add(setting)
   		}
-		data = setting.get('data')
+		var data = setting.get('data')
 		data.push(name)
 		setting.save({data: data})
   	},
   	onRemoveSetting: function(idx, id, e) {
   		e.preventDefault()
-  		setting = this.state.settings.get(id)
+  		var setting = this.state.settings.get(id)
   		if(setting) {
-  			data = setting.get('data')
+  			var data = setting.get('data')
   			if(data) {
   				data.splice(idx, 1)
   				setting.save({data: data})
@@ -65,7 +65,7 @@ AppSetting = React.createClass({displayName: 'AppSetting',
   		}
   	},
   	getSetting: function(id) {
-  		setting = this.state.settings.get(id)
+  		var setting = this.state.settings.get(id)
   		if(!setting) {
   			return []
   		}
@@ -151,7 +151,7 @@ module.exports = AppSettings = React.createClass({displayName: 'AppSettings',
 		return {}
 	},
 	render: function() {
-		_this = this
+		var _this = this
 		return (
 			React.DOM.div({className: "applications"}, 
 				React.DOM.h1(null, "Application ", React.DOM.small(null, "Settings")), 
@@ -171,9 +171,9 @@ module.exports = AppSettings = React.createClass({displayName: 'AppSettings',
 
 var React = require('react');
 
-Navbar = React.createClass({displayName: 'Navbar',
+var Navbar = React.createClass({displayName: 'Navbar',
 	getInitialState: function(props) {
-		props = props || this.props;
+		var props = props || this.props;
 		return {
 		}
 	},
@@ -263,8 +263,7 @@ SpiderWebApp = React.createClass({displayName: 'SpiderWebApp',
   		
   	},
   	updateTemplate: function() {
-  		console.log("UpdateTemplate")
-		_this = this
+  		var _this = this
 		if(this.state.showPreview) {
 			this.state.template.render(function(response) {
 				_this.setState({value: response.data})
@@ -302,7 +301,7 @@ var Template = require('../models/Template')
 
 TemplateViewer = React.createClass({displayName: 'TemplateViewer',
 	getInitialState: function(props) {
-		props = props || this.props;
+		var props = props || this.props;
 		return {
 			editMode: TemplateViewer.mode.saved,
 			timeout: undefined,
@@ -329,8 +328,8 @@ TemplateViewer = React.createClass({displayName: 'TemplateViewer',
   	},
   	onUpdate: function() {
   		if(!this.props.showPreview) {
-	  		_this = this
-	  		timeout = setTimeout(this.onError, 2000)
+	  		var _this = this
+	  		var timeout = setTimeout(this.onError, 2000)
 	  		this.props.template.save({data: this.state.value},{
 	  			timeout: 2000,
 	  			failure: function(model, response) {
@@ -405,10 +404,10 @@ module.exports = {
 		config: process.env.LOG_CONFIG || 'log4js.config.json'
 	},
 	binding: {
-		port: process.env.BINDING_PORT || 8082
+		port: process.env.BINDING_PORT || 8081
 	},
 	api: {
-		host: 'http://localhost:' + (process.env.BINDING_PORT || 8082)
+		host: 'http://localhost:' + (process.env.BINDING_PORT || 8081)
 	},
   	marathon: {
     	host: process.env.MARATHON_HOST || 'localhost',
@@ -423,6 +422,7 @@ module.exports = {
 var Config = require('../config')
 var RestClient = require('node-rest-client').Client
 var Backbone = require('backbone')
+
 Backbone.$ = require('jquery')
 
 var SettingsUri = 'api/v1.0/setting'
@@ -489,11 +489,11 @@ var Tasks = Backbone.Collection.extend({
 	model: Task,
 	url: TasksUri,
 	parse: function(response) {
-		tasks = {}
+		var tasks = {}
 		_.each(response.tasks, function(task) {
 			if(task.ports) {
 				_.each(task.servicePorts, function(port, idx) {
-					id = (task.appId + '_' + port.toString()).replace(/^\//, '').replace(/[^\w]/g, '_')
+					var id = (task.appId + '_' + port.toString()).replace(/^\//, '').replace(/[^\w]/g, '_')
 					if(!tasks.hasOwnProperty(id)) {
 						tasks[id] = {
 							id: id,

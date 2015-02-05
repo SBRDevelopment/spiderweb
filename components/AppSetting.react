@@ -27,20 +27,20 @@ AppSetting = React.createClass({
   		}
   	},
   	addSetting: function(id, name) {
-  		setting = this.state.settings.get(id)
+  		var setting = this.state.settings.get(id)
   		if(!setting) {
   			setting = new this.state.settings.model({id: id, data: []})
   			setting = this.state.settings.add(setting)
   		}
-		data = setting.get('data')
+		var data = setting.get('data')
 		data.push(name)
 		setting.save({data: data})
   	},
   	onRemoveSetting: function(idx, id, e) {
   		e.preventDefault()
-  		setting = this.state.settings.get(id)
+  		var setting = this.state.settings.get(id)
   		if(setting) {
-  			data = setting.get('data')
+  			var data = setting.get('data')
   			if(data) {
   				data.splice(idx, 1)
   				setting.save({data: data})
@@ -48,7 +48,7 @@ AppSetting = React.createClass({
   		}
   	},
   	getSetting: function(id) {
-  		setting = this.state.settings.get(id)
+  		var setting = this.state.settings.get(id)
   		if(!setting) {
   			return []
   		}

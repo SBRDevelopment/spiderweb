@@ -8,7 +8,7 @@ module.exports = AppSettings = React.createClass({
 		return {}
 	},
 	render: function() {
-		_this = this
+		var _this = this
 		return (
 			<div className="applications">
 				<h1>Application <small>Settings</small></h1>

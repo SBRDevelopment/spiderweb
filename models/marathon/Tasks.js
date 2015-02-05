@@ -10,11 +10,11 @@ var Tasks = Backbone.Collection.extend({
 	model: Task,
 	url: TasksUri,
 	parse: function(response) {
-		tasks = {}
+		var tasks = {}
 		_.each(response.tasks, function(task) {
 			if(task.ports) {
 				_.each(task.servicePorts, function(port, idx) {
-					id = (task.appId + '_' + port.toString()).replace(/^\//, '').replace(/[^\w]/g, '_')
+					var id = (task.appId + '_' + port.toString()).replace(/^\//, '').replace(/[^\w]/g, '_')
 					if(!tasks.hasOwnProperty(id)) {
 						tasks[id] = {
 							id: id,

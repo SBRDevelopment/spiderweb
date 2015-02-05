@@ -43,9 +43,9 @@ module.exports = function(app, state) {
 			function(data, stat) {
 				settings.getAllSettings(function(settings) {
 					tasks.getTasks(function(tasks) {
-						tasks = mergeSettings(tasks, settings)
-						template = ejs.compile(data)
-						config = template({tasks: tasks, settings: settings})
+						var tasks = mergeSettings(tasks, settings)
+						var template = ejs.compile(data)
+						var config = template({tasks: tasks, settings: settings})
 						setConfig('haproxy', config, failure, success)
 					})
 				})

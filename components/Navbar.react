@@ -2,9 +2,9 @@
 
 var React = require('react');
 
-Navbar = React.createClass({
+var Navbar = React.createClass({
 	getInitialState: function(props) {
-		props = props || this.props;
+		var props = props || this.props;
 		return {
 		}
 	},

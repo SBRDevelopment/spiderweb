@@ -6,7 +6,7 @@ var Template = require('../models/Template')
 
 TemplateViewer = React.createClass({
 	getInitialState: function(props) {
-		props = props || this.props;
+		var props = props || this.props;
 		return {
 			editMode: TemplateViewer.mode.saved,
 			timeout: undefined,
@@ -33,8 +33,8 @@ TemplateViewer = React.createClass({
   	},
   	onUpdate: function() {
   		if(!this.props.showPreview) {
-	  		_this = this
-	  		timeout = setTimeout(this.onError, 2000)
+	  		var _this = this
+	  		var timeout = setTimeout(this.onError, 2000)
 	  		this.props.template.save({data: this.state.value},{
 	  			timeout: 2000,
 	  			failure: function(model, response) {
