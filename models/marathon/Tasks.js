@@ -14,7 +14,7 @@ var Tasks = Backbone.Collection.extend({
 		_.each(response.tasks, function(task) {
 			if(task.ports) {
 				_.each(task.servicePorts, function(port, idx) {
-					id = (task.appId + '_' + port.toString()).replace(/^\//g, '').replace(/[^\w]/, '_')
+					id = (task.appId + '_' + port.toString()).replace(/^\//, '').replace(/[^\w]/g, '_')
 					if(!tasks.hasOwnProperty(id)) {
 						tasks[id] = {
 							id: id,
@@ -28,7 +28,7 @@ var Tasks = Backbone.Collection.extend({
 						}
 					}
 					tasks[id].hosts.push({
-						id: (task.host + '_' + task.ports[idx].toString()).replace(/^\//g, '').replace(/[^\w]/, '_'),
+						id: (task.host + '_' + task.ports[idx].toString()).replace(/^\//, '').replace(/[^\w]/g, '_'),
 						host: task.host,
 						port: task.ports[idx]
 					})

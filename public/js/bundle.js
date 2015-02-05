@@ -401,21 +401,21 @@ module.exports = TemplateViewer
 (function (process){
 module.exports = {
 	log: {
-		level: process.env.log_level || 'DEBUG',
-		config: process.env.log_config || 'log4js.config.json'
+		level: process.env.LOG_LEVEL || 'DEBUG',
+		config: process.env.LOG_CONFIG || 'log4js.config.json'
 	},
 	binding: {
-		port: process.env.binding_port || 8081
+		port: process.env.BINDING_PORT || 8082
 	},
 	api: {
-		host: 'http://localhost:' + (process.env.binding_port || 8081)
+		host: 'http://localhost:' + (process.env.BINDING_PORT || 8082)
 	},
   	marathon: {
-    	host: process.env.marathon_host || 'localhost',
-    	port: process.env.marathon_port || 8080
+    	host: process.env.MARATHON_HOST || 'localhost',
+    	port: process.env.MARATHON_PORT || 8080
 	},
  	zookeeper: {
-  		connect: process.env.zookeeper_connect || 'localhost:2181'
+  		connect: process.env.ZOOKEEPER_CONNECT || 'localhost:2181'
   	}
 }
 }).call(this,require('_process'))
@@ -493,7 +493,7 @@ var Tasks = Backbone.Collection.extend({
 		_.each(response.tasks, function(task) {
 			if(task.ports) {
 				_.each(task.servicePorts, function(port, idx) {
-					id = (task.appId + '_' + port.toString()).replace(/^\//g, '').replace(/[^\w]/, '_')
+					id = (task.appId + '_' + port.toString()).replace(/^\//, '').replace(/[^\w]/g, '_')
 					if(!tasks.hasOwnProperty(id)) {
 						tasks[id] = {
 							id: id,
@@ -507,7 +507,7 @@ var Tasks = Backbone.Collection.extend({
 						}
 					}
 					tasks[id].hosts.push({
-						id: (task.host + '_' + task.ports[idx].toString()).replace(/^\//g, '').replace(/[^\w]/, '_'),
+						id: (task.host + '_' + task.ports[idx].toString()).replace(/^\//, '').replace(/[^\w]/g, '_'),
 						host: task.host,
 						port: task.ports[idx]
 					})
