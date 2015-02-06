@@ -35,6 +35,12 @@ All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` enviro
 }
 ```
 
+If you don't want to run it in marathon you can also optionally run it manually in docker by running the command below. Again be sure to change the env variables `MARATHON_HOST` and `ZOOKEEPER_CONNECT`.
+
+```
+docker run -d -e MARATHON_HOST=127.0.0.1 -e ZOOKEEPER_CONNECT=127.0.0.1:2181 -p 32000:8081 sbrnetmarketing/spiderweb
+```
+
 Once you add the application then install the cronjob to update haproxy. Assuming that `32000` is the port that was selected for the `hostPort` in the previous step.
 
 ```bash
