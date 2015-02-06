@@ -13,12 +13,12 @@ var Settings = Backbone.Collection.extend({
 
 Settings.getSettings = function(appId, callback) {
 	new RestClient().get(Config.api.host + '/' + SettingsUri + '/' + encodeURIComponent(appId), function(data, response) {
-		callback(JSON.parse(data));	
+		callback(null, JSON.parse(data));	
 	})
 }
 Settings.getAllSettings = function(callback) {
 	new RestClient().get(Config.api.host + '/' + SettingsUri, function(data, response) {
-		callback(JSON.parse(data));	
+		callback(null, JSON.parse(data));	
 	})
 }
 

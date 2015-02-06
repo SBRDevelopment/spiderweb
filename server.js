@@ -8,10 +8,10 @@ var http = require('http');
 var routes = include('routes');
 var bodyParser = require('body-parser')
 var namespace = require('express-namespace')
-var domain = require('connect-domain')
 var config = include('config')
 var state = include('state')
-var zookeeper = include('zookeeper')
+var utils = include('utils')
+
 
 // Start express instance
 var app = express();
@@ -23,19 +23,9 @@ app.set('view engine', 'html')
 app.use(bodyParser.json());
 
 // Set up routes
-zookeeper.init(app, state)
 routes.init(app, state)
 
-app.use(domain())
-
-app.use(function(err, req, res, next) {
-	state.log.error(err)
-	res.status(500)
-	res.json({
-		message: 'Unknown error occurred',
-		error: err
-	})
-})
+utils.createDefaultTemplate(state)
 
 // Start the server
 var server = http.createServer(app).listen(config.binding.port, function() {

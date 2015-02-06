@@ -24,7 +24,7 @@ var Template = Backbone.Model.extend({
 
 Template.getTemplate = function(id, callback) {
 	new RestClient().get(Config.api.host + '/' + TemplateUri + '/' + id, function(data, response) {
-		callback(data);	
+		callback(null, data);	
 	})
 }
 

@@ -22,8 +22,7 @@ var Tasks = Backbone.Collection.extend({
 							appId: task.appId,		
 							hosts: [],
 							settings: {
-								backend: [],
-								frontend: []
+								options: []
 							}
 						}
 					}
@@ -41,7 +40,7 @@ var Tasks = Backbone.Collection.extend({
 
 Tasks.getTasks = function(callback) {
 	new RestClient().get(TasksUri, function(data, response) {
-		callback(new Tasks().parse(data));	
+		callback(null, new Tasks().parse(data));	
 	})
 }
 

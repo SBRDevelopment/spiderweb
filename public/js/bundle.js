@@ -396,12 +396,12 @@ var Settings = Backbone.Collection.extend({
 
 Settings.getSettings = function(appId, callback) {
 	new RestClient().get(Config.api.host + '/' + SettingsUri + '/' + encodeURIComponent(appId), function(data, response) {
-		callback(JSON.parse(data));	
+		callback(null, JSON.parse(data));	
 	})
 }
 Settings.getAllSettings = function(callback) {
 	new RestClient().get(Config.api.host + '/' + SettingsUri, function(data, response) {
-		callback(JSON.parse(data));	
+		callback(null, JSON.parse(data));	
 	})
 }
 
@@ -433,7 +433,7 @@ var Template = Backbone.Model.extend({
 
 Template.getTemplate = function(id, callback) {
 	new RestClient().get(Config.api.host + '/' + TemplateUri + '/' + id, function(data, response) {
-		callback(data);	
+		callback(null, data);	
 	})
 }
 
@@ -463,8 +463,7 @@ var Tasks = Backbone.Collection.extend({
 							appId: task.appId,		
 							hosts: [],
 							settings: {
-								backend: [],
-								frontend: []
+								options: []
 							}
 						}
 					}
@@ -482,7 +481,7 @@ var Tasks = Backbone.Collection.extend({
 
 Tasks.getTasks = function(callback) {
 	new RestClient().get(TasksUri, function(data, response) {
-		callback(new Tasks().parse(data));	
+		callback(null, new Tasks().parse(data));	
 	})
 }
 

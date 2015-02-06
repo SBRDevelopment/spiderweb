@@ -20,8 +20,7 @@ module.exports.init = function(app, state){
   app.namespace('/api/v1.0', function() {
     app.namespace('template', function() {
       app.get('/:appId', controllers.template.viewTemplate)
-      app.get('/:appId/render', controllers.template.renderTemplate)
-      app.get('/:appId/render.txt', controllers.template.renderTemplateText)
+      app.get('/:appId/render(:ext)?', controllers.template.renderTemplate)
       app.put('/', controllers.template.updateTemplate)
     })
     app.namespace('setting', function() {
