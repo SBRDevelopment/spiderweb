@@ -23,7 +23,10 @@ var Settings = require('../models/Settings')
 AppSetting = React.createClass({displayName: 'AppSetting',
 	getInitialState: function() {
 		return {
-			settings: new Settings()
+			editMode: AppSetting.mode.saved,
+			timeout: undefined,
+			settings: new Settings(),
+			value: undefined
 		}
 	},	
 	componentDidMount: function() {
@@ -32,44 +35,46 @@ AppSetting = React.createClass({displayName: 'AppSetting',
 		this.state.settings.on('sync', this.props.onUpdateTemplate)
 		this.state.settings.fetch()
 	},
-  	onAddSetting: function(id, e) {
-  		e.preventDefault()
-  		switch(id) {
-  			case AppSetting.options.frontend:
-  				this.addSetting(id, this.refs.frontendOptions.getDOMNode().value)
-  				break;
-  			case AppSetting.options.backend:
-  				this.addSetting(id, this.refs.backendOptions.getDOMNode().value)
-  				break;
-  		}
-  	},
-  	addSetting: function(id, name) {
-  		var setting = this.state.settings.get(id)
-  		if(!setting) {
-  			setting = new this.state.settings.model({id: id, data: []})
-  			setting = this.state.settings.add(setting)
-  		}
-		var data = setting.get('data')
-		data.push(name)
-		setting.save({data: data})
-  	},
-  	onRemoveSetting: function(idx, id, e) {
-  		e.preventDefault()
-  		var setting = this.state.settings.get(id)
-  		if(setting) {
-  			var data = setting.get('data')
-  			if(data) {
-  				data.splice(idx, 1)
-  				setting.save({data: data})
-  			}
-  		}
-  	},
   	getSetting: function(id) {
   		var setting = this.state.settings.get(id)
-  		if(!setting) {
-  			return []
+  		if(!setting || this.state.value != undefined) {
+  			return this.state.value
+  		} else {
+  			return setting.get('data')	
   		}
-  		return setting.get('data')
+  	},
+  	updateOptions: function(e) {
+		if(this.state.editMode == AppSetting.mode.writing) {
+  			clearTimeout(this.state.timeout)
+  		}
+  		this.setState({
+  			editMode: AppSetting.mode.writing,
+  			value: e.target.value,
+  			timeout: setTimeout(this.onUpdate.bind(this, 'options', e.target.value), 500)
+  		})
+  	},
+  	onUpdate: function(id, data) {
+  		var setting = this.state.settings.get(id)
+  		if(!setting) {
+  			setting = new this.state.settings.model({id: id})
+  			setting = this.state.settings.add(setting)
+  		}
+
+	  	var _this = this
+	  	var timeout = setTimeout(this.onError, 2000)
+		setting.save({data: data}, {
+  			timeout: 2000,
+  			failure: function(model, response) {
+  				_this.onError(response)
+  			},
+  			success: function(model, response) {
+  				clearTimeout(timeout)
+  				_this.setState({editMode: AppSetting.mode.saved})
+  			}
+		})
+  	},  	
+  	onError: function(error) {
+		this.setState({editMode: AppSetting.mode.error, message: error || "Unknown Error"})
   	},
 	render: function() {
 		return (
@@ -78,54 +83,10 @@ AppSetting = React.createClass({displayName: 'AppSetting',
 			    React.DOM.h3({className: "panel-title"}, this.props.task.id)
 			  ), 
 			  React.DOM.div({className: "panel-body"}, 
-				React.DOM.form({className: "form-horizontal"}, 
-				  React.DOM.div({className: "form-group form-group-sm"}, 
-				    React.DOM.label({for: "frontendOptions", className: "col-xs-3 control-label"}, "Frontend Option"), 
-				    React.DOM.div({className: "input-group col-xs-8 col-sm-8 col-md-8 input-group-sm"}, 
-						React.DOM.input({type: "text", className: "form-control", ref: "frontendOptions", placeholder: "enter option"}), 
-						React.DOM.span({className: "input-group-btn"}, 
-							React.DOM.button({className: "btn btn-default", type: "button", onClick: this.onAddSetting.bind(this, AppSetting.options.frontend)}, 
-								"Add ", React.DOM.span({className: "glyphicon glyphicon-plus", 'aria-hidden': "true"})
-							)
-						)
-				    )
-				  ), 
-				  React.DOM.div({className: "form-group form-group-sm"}, 
-					React.DOM.ul({className: "list-group list-options col-xs-offset-3 col-xs-8 col-sm-8 col-md-8"}, 
-						
-							this.getSetting(AppSetting.options.frontend).map(function(option, i) {
-								return (
-									React.DOM.li({key: i, className: "list-group-item"}, 
-										option, " ", React.DOM.span({className: "glyphicon glyphicon-trash pull-right", onClick: this.onRemoveSetting.bind(this, i, AppSetting.options.frontend), 'aria-hidden': "true"})
-									)
-								)
-							}.bind(this))
-						
-					)
-				  ), 
-				  React.DOM.div({className: "form-group form-group-sm"}, 
-				    React.DOM.label({for: "backendOptions", className: "col-xs-3 control-label"}, "Backend Option"), 
-				    React.DOM.div({className: "input-group col-xs-8 col-sm-8 col-md-8 input-group-sm"}, 
-						React.DOM.input({type: "text", className: "form-control", ref: "backendOptions", placeholder: "enter option"}), 
-						React.DOM.span({className: "input-group-btn"}, 
-							React.DOM.button({className: "btn btn-default", type: "button", onClick: this.onAddSetting.bind(this, AppSetting.options.backend)}, 
-								"Add ", React.DOM.span({className: "glyphicon glyphicon-plus", 'aria-hidden': "true"})
-							)
-						)
-				    )
-				  ), 
-				  React.DOM.div({className: "form-group form-group-sm"}, 
-				  	React.DOM.ul({className: "list-group list-options col-xs-offset-3 col-xs-8 col-sm-8 col-md-8"}, 
-						
-							this.getSetting(AppSetting.options.backend).map(function(option, i) {
-								return (
-									React.DOM.li({key: i, className: "list-group-item"}, 
-										option, " ", React.DOM.span({className: "glyphicon glyphicon-trash pull-right", onClick: this.onRemoveSetting.bind(this, i, AppSetting.options.backend), 'aria-hidden': "true"})
-									)
-								)
-							}.bind(this))
-						
-					)
+				React.DOM.form(null, 
+				  React.DOM.div({className: "form-group"}, 
+    				React.DOM.label({for: "haproxyOptions"}, "Haproxy Options"), 
+				  	React.DOM.textarea({className: "form-control", ref: "haproxyOptions", rows: "5", value: this.getSetting('options'), onChange: this.updateOptions})
 				  )
 				)
 			  )
@@ -134,9 +95,10 @@ AppSetting = React.createClass({displayName: 'AppSetting',
 	}
 });
 
-AppSetting.options = {
-	frontend: 'frontend',
-	backend: 'backend'
+AppSetting.mode = {
+	saved: 1,
+	writing: 2,
+	error: 3
 }
 
 module.exports = AppSetting
@@ -322,7 +284,7 @@ TemplateViewer = React.createClass({displayName: 'TemplateViewer',
 	  		this.setState({
 	  			editMode: TemplateViewer.mode.writing,
 	  			value: e.target.value,
-	  			timeout: setTimeout(this.onUpdate, 2000)
+	  			timeout: setTimeout(this.onUpdate, 500)
 	  		})
   		}
   	},

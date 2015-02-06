@@ -27,7 +27,7 @@ TemplateViewer = React.createClass({
 	  		this.setState({
 	  			editMode: TemplateViewer.mode.writing,
 	  			value: e.target.value,
-	  			timeout: setTimeout(this.onUpdate, 2000)
+	  			timeout: setTimeout(this.onUpdate, 500)
 	  		})
   		}
   	},
