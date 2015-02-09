@@ -39,7 +39,7 @@ All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` enviro
       		"gracePeriodSeconds": 5,
       		"intervalSeconds": 20,
       		"maxConsecutiveFailures": 3
-    	}]
+	}]
 }
 ```
 
