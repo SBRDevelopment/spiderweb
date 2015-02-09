@@ -17,7 +17,7 @@ All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` enviro
 	},
 	"instances": 1,
 	"cpus": 0.2,
-	"mem": 128,
+	"mem": 256,
 	"uris": [],
 	"container": {
 		"type": "DOCKER",
@@ -31,7 +31,15 @@ All you need to do is replace the `MARATHON_HOST` and `ZOOKEEPER_CONNECT` enviro
 			}]
 		}
 	},
-	"constraints": [["hostname", "UNIQUE"]]
+	"constraints": [["hostname", "UNIQUE"]],
+	"healthChecks": [{
+      		"protocol": "HTTP",
+      		"portIndex": 0,
+      		"path": "/",
+      		"gracePeriodSeconds": 5,
+      		"intervalSeconds": 20,
+      		"maxConsecutiveFailures": 3
+    	}]
 }
 ```
 
