@@ -39,7 +39,7 @@ var Tasks = Backbone.Collection.extend({
 })
 
 Tasks.getTasks = function(callback) {
-	new RestClient().get(TasksUri, function(data, response) {
+	new RestClient().get(TasksUri, {headers: {"Accept": "application/json"}}, function(data, response) {
 		callback(null, new Tasks().parse(data));	
 	})
 }
